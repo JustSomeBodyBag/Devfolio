@@ -2,30 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Минимализм + неоморфизм */
+/* Светлая тема (по умолчанию) */
+:root {
+  --bg: #e0e0e0;
+  --fg: #333;
+  --accent: #3f51b5;
+
+  --neumorph-light: #ffffff;
+  --neumorph-dark: #bebebe;
+}
+
+/* Тёмная тема */
+.dark {
+  --bg: #1a1a1a;
+  --fg: #f0f0f0;
+  --accent: #90caf9;
+
+  --neumorph-light: #2a2a2a;
+  --neumorph-dark: #111111;
+}
+
 body {
-  background: #e0e0e0;
-  color: #333;
+  background-color: var(--bg);
+  color: var(--fg);
   font-family: system-ui, sans-serif;
 }
 
+/* Кнопки */
+button {
+  color: var(--fg);
+  background-color: var(--bg);
+  border: none;
+  cursor: pointer;
+}
+
+/* Неоморфные блоки */
 .bg-neumorph {
-  background: #e0e0e0;
+  background: var(--bg);
   border-radius: 1rem;
-  box-shadow: 8px 8px 15px #bebebe, -8px -8px 15px #ffffff;
+  box-shadow: 8px 8px 15px var(--neumorph-dark), -8px -8px 15px var(--neumorph-light);
 }
 
 .bg-neumorph-hover:hover {
-  box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
+  box-shadow: 4px 4px 8px var(--neumorph-dark), -4px -4px 8px var(--neumorph-light);
   transition: all 0.3s ease-in-out;
 }
 
 .shadow-neumorph {
-  box-shadow: 8px 8px 15px #bebebe, -8px -8px 15px #ffffff;
+  box-shadow: 8px 8px 15px var(--neumorph-dark), -8px -8px 15px var(--neumorph-light);
 }
 
 .shadow-neumorph-hover:hover {
-  box-shadow: 4px 4px 10px #bebebe, -4px -4px 10px #ffffff;
+  box-shadow: 4px 4px 10px var(--neumorph-dark), -4px -4px 10px var(--neumorph-light);
   transition: all 0.3s ease-in-out;
 }
 
@@ -48,9 +76,9 @@ ul, ol {
   margin-left: auto;
   margin-right: auto;
   padding: 16px;
-  background-color: #fff;
+  background-color: var(--bg);
   border-radius: 1rem;
-  box-shadow: 8px 8px 15px #bebebe, -8px -8px 15px #ffffff;
+  box-shadow: 8px 8px 15px var(--neumorph-dark), -8px -8px 15px var(--neumorph-light);
   user-select: none;
 }
 
@@ -60,7 +88,7 @@ ul, ol {
   font-weight: 700;
   margin-bottom: 24px;
   text-align: center;
-  color: #111;
+  color: var(--fg);
 }
 
 /* Сетка для списка */
@@ -78,9 +106,9 @@ ul, ol {
 
 /* Элементы списка навыков */
 .skills-list-item {
-  background: #e0e0e0;
+  background: var(--bg);
   border-radius: 1rem;
-  box-shadow: 8px 8px 15px #bebebe, -8px -8px 15px #ffffff;
+  box-shadow: 8px 8px 15px var(--neumorph-dark), -8px -8px 15px var(--neumorph-light);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -91,7 +119,7 @@ ul, ol {
 }
 
 .skills-list-item:hover {
-  box-shadow: 4px 4px 10px #bebebe, -4px -4px 10px #ffffff;
+  box-shadow: 4px 4px 10px var(--neumorph-dark), -4px -4px 10px var(--neumorph-light);
 }
 
 /* Название скилла */
@@ -100,7 +128,7 @@ ul, ol {
   font-weight: 600;
   margin-bottom: 8px;
   text-align: center;
-  color: #222;
+  color: var(--fg);
 }
 
 /* Уровень скилла */
@@ -109,7 +137,10 @@ ul, ol {
   color: #666;
 }
 
+.dark .skill-level {
+  color: #aaa;
+}
+
 .skill-level span {
   font-weight: 500;
 }
-

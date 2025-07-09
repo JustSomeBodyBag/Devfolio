@@ -1,90 +1,96 @@
-/* Общие стили неоморфизма и минимализма для главной секции */
-
 .home-main {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding: 1.5rem; /* 24px */
-  gap: 5rem; /* пространство между секциями */
+  padding: 2rem 1rem;
   background-color: #e0e0e0;
-  transition: background-color 0.5s ease;
   user-select: none;
 }
 
-.home-main.dark {
-  background-color: #1a202c; /* темный фон */
-}
-
 .home-intro {
-  background-color: #fff;
-  border-radius: 1.5rem;
-  max-width: 600px;
-  width: 100%;
-  padding: 2.5rem 2.5rem 3rem;
+  background: #e0e0e0;
   box-shadow: 8px 8px 20px #bebebe, -8px -8px 20px #ffffff;
+  padding: 3rem 4rem;
+  border-radius: 2rem;
   text-align: center;
+  max-width: 720px;
   transition: box-shadow 0.3s ease-in-out;
+  user-select: text;
 }
 
 .home-intro:hover {
   box-shadow: 4px 4px 12px #bebebe, -4px -4px 12px #ffffff;
 }
 
-/* Аватар */
 .home-avatar {
-  width: 112px;
-  height: 112px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
-  margin: 0 auto 1.5rem;
   box-shadow: 8px 8px 15px #bebebe, -8px -8px 15px #ffffff;
-  transition: opacity 0.7s ease, box-shadow 0.3s ease-in-out;
-  object-fit: cover;
-  display: block;
-}
-
-.home-avatar.dark {
-  box-shadow: 8px 8px 15px #1a202c, -8px -8px 15px #2d3748;
+  margin: 2rem auto 1rem;
+  user-select: none;
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .home-avatar:hover {
   box-shadow: 4px 4px 10px #bebebe, -4px -4px 10px #ffffff;
 }
 
-/* Заголовки */
 .home-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 0.75rem;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
   color: #111;
   user-select: text;
 }
 
-.home-title.dark {
-  color: #e2e8f0;
-}
-
 .home-subtitle {
-  font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 1.25rem;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
   color: #555;
   user-select: text;
 }
 
-.home-subtitle.dark {
-  color: #a0aec0;
-}
-
-/* Абзац с описанием */
 .home-about {
-  font-size: 1.125rem;
+  font-size: 1rem;
+  line-height: 1.5;
   color: #444;
-  line-height: 1.6;
-  white-space: pre-line;
   user-select: text;
 }
 
-.home-about.dark {
+/* === ТЁМНАЯ ТЕМА === */
+.dark .home-main {
+  background-color: #1a202c;
+}
+
+.dark .home-intro {
+  background-color: #2d3748;
+  box-shadow: 8px 8px 20px #1a1f29, -8px -8px 20px #3a4452;
+}
+
+.dark .home-intro:hover {
+  box-shadow: 4px 4px 12px #1a1f29, -4px -4px 12px #3a4452;
+}
+
+.dark .home-avatar {
+  box-shadow: 8px 8px 15px #1a1f29, -8px -8px 15px #3a4452;
+}
+
+.dark .home-avatar:hover {
+  box-shadow: 4px 4px 10px #1a1f29, -4px -4px 10px #3a4452;
+}
+
+.dark .home-title {
+  color: #e2e8f0;
+}
+
+.dark .home-subtitle {
+  color: #a0aec0;
+}
+
+.dark .home-about {
   color: #cbd5e1;
 }

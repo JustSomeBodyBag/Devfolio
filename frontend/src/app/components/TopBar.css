@@ -22,7 +22,7 @@
 
 .topbar-link:hover {
   background-color: #e4e4e4;
-  color: #2563eb; /* Tailwind's blue-600 */
+  color: #2563eb;
   box-shadow: 4px 4px 12px #c1c1c1, -4px -4px 12px #ffffff;
 }
 
@@ -44,4 +44,32 @@
   background: white;
   border-radius: 50%;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+}
+
+/* === ТЁМНАЯ ТЕМА === */
+.dark .topbar {
+  background: #2d3748;
+  box-shadow: 8px 8px 16px #1a1f29, -8px -8px 16px #3a4452;
+}
+
+.dark .topbar-link {
+  background-color: #374151;
+  color: #e2e8f0;
+}
+
+.dark .topbar-link:hover {
+  background-color: #4b5563;
+  color: #60a5fa;
+  box-shadow: 4px 4px 12px #1a1f29, -4px -4px 12px #4a5568;
+}
+
+.dark .topbar-link.active {
+  background-color: #2563eb;
+  color: white;
+  box-shadow: inset 4px 4px 8px #1e40af, inset -4px -4px 8px #3b82f6;
+}
+
+.dark .topbar-link.active::after {
+  background: #e2e8f0;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
 }

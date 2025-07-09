@@ -95,3 +95,58 @@
 .contacts-info.error {
   color: red;
 }
+
+/* === ТЁМНАЯ ТЕМА === */
+.dark .contacts-main {
+  background-color: #1a202c;
+}
+
+.dark .contacts-title {
+  color: #e2e8f0;
+}
+
+.dark .contacts-form {
+  background: #2d3748;
+  box-shadow: 8px 8px 15px #1a1f29, -8px -8px 15px #3a4452;
+}
+
+.dark .contacts-input {
+  background: #2d3748;
+  color: #e2e8f0;
+  box-shadow: inset 6px 6px 10px #1a1f29, inset -6px -6px 10px #3a4452;
+}
+
+.dark .contacts-input:focus {
+  box-shadow: inset 2px 2px 5px #111827, inset -2px -2px 5px #4a5568;
+}
+
+.dark .contacts-btn {
+  background: #2563eb;
+  box-shadow: 4px 4px 10px #1e40af, -4px -4px 10px #3b82f6;
+}
+
+.dark .contacts-btn:hover {
+  background: #1d4ed8;
+  box-shadow: inset 4px 4px 10px #1e3a8a, inset -4px -4px 10px #2563eb;
+}
+
+.dark .contacts-info {
+  color: #cbd5e1;
+}
+
+.dark .contacts-link {
+  color: #60a5fa;
+}
+
+.dark .contacts-link:hover,
+.dark .contacts-link:focus {
+  color: #3b82f6;
+}
+
+.dark .contacts-info.success {
+  color: #38a169;
+}
+
+.dark .contacts-info.error {
+  color: #f56565;
+}
