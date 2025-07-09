@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Минимализм + неоморфизм */
+body {
+  background: #e0e0e0;
+  color: #333;
+  font-family: system-ui, sans-serif;
+}
+
+.bg-neumorph {
+  background: #e0e0e0;
+  border-radius: 1rem;
+  box-shadow: 8px 8px 15px #bebebe, -8px -8px 15px #ffffff;
+}
+
+.bg-neumorph-hover:hover {
+  box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
+  transition: all 0.3s ease-in-out;
+}
+
+.shadow-neumorph {
+  box-shadow: 8px 8px 15px #bebebe, -8px -8px 15px #ffffff;
+}
+
+.shadow-neumorph-hover:hover {
+  box-shadow: 4px 4px 10px #bebebe, -4px -4px 10px #ffffff;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Сброс дефолтов списков */
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Установка box-sizing для всех элементов */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Отступы и паддинги для секции навыков */
+.skills-section {
+  max-width: 600px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 8px 8px 15px #bebebe, -8px -8px 15px #ffffff;
+  user-select: none;
+}
+
+/* Заголовок в секции */
+.skills-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #111;
+}
+
+/* Сетка для списка */
+.skills-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .skills-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Элементы списка навыков */
+.skills-list-item {
+  background: #e0e0e0;
+  border-radius: 1rem;
+  box-shadow: 8px 8px 15px #bebebe, -8px -8px 15px #ffffff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 80px;
+  transition: box-shadow 0.3s ease-in-out;
+  word-break: break-word;
+}
+
+.skills-list-item:hover {
+  box-shadow: 4px 4px 10px #bebebe, -4px -4px 10px #ffffff;
+}
+
+/* Название скилла */
+.skill-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+  color: #222;
+}
+
+/* Уровень скилла */
+.skill-level {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.skill-level span {
+  font-weight: 500;
+}
+

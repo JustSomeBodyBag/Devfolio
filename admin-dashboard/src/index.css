@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --custom-color: #3B82F6;
+  --custom-color-dark: #2563EB;
+}
+
+html.light {
+  color: #213547;
+  background-color: #ffffff;
+}
+
+html.dark {
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: inherit;
+  background-color: inherit;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Удалили #root стили, так как layout задаётся иначе */
+
+button {
+  background-color: var(--custom-color);
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+  color: white;
+}
+
+button:hover {
+  background-color: var(--custom-color-dark);
+  color: white;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 3px solid var(--custom-color-dark);
+  outline-offset: 2px;
+}
+
+a:hover {
+  color: #646cff;
+}
+
+html.light a:hover {
+  color: #747bff;
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db; /* default gray-300 */
+  background-color: #ffffff;
+  color: #111827; /* gray-900 */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+  border-color: var(--custom-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* rgba of --custom-color */
+}
+
+html.dark input {
+  background-color: #1f2937; /* gray-800 */
+  border-color: #374151; /* gray-700 */
+  color: #f9fafb; /* gray-50 */
+}
+
+html.dark input:focus {
+  border-color: var(--custom-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}

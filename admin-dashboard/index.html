@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/index.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- public/index.html -->
+  <script>
+  (function () {
+    const savedColor = localStorage.getItem('primaryColor');
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedColor) {
+      document.documentElement.style.setProperty('--custom-color', savedColor);
+    }
+
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(savedTheme);
+    }
+  })();
+</script>
+
+  </body>
+</html>
