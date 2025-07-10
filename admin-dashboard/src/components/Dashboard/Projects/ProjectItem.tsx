@@ -14,7 +14,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ project, dragHandleProps }) =
   const handleDeleteScreenshot = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    if (deleting) return; // блокируем повторное удаление
+    if (deleting) return;
 
     setDeleting(true);
     try {
@@ -58,8 +58,9 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ project, dragHandleProps }) =
               onClick={handleDeleteScreenshot}
               disabled={deleting}
               onMouseDown={(e) => e.stopPropagation()}
-              className={`mt-4 self-start text-sm font-medium underline transition-colors
-                ${deleting ? "text-gray-400 cursor-not-allowed" : "text-red-600 hover:text-red-800"}`}
+              className={`mt-4 self-start text-sm font-medium underline transition-colors ${
+                deleting ? "text-gray-400 cursor-not-allowed" : "text-red-600 hover:text-red-800"
+              }`}
               type="button"
             >
               {deleting ? "Удаление..." : "Удалить скриншот"}

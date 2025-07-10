@@ -1,76 +1,80 @@
-import React, { useCallback, useState, useEffect } from "react"
-import { useDropzone } from "react-dropzone"
-import axios from "../../api/axios"
+import React, { useCallback, useState, useEffect } from "react";
+import { useDropzone } from "react-dropzone";
+import axios from "../../api/axios";
 
 interface Props {
-  initialAvatarUrl?: string
-  onUploadComplete: (avatarUrl: string) => void
-  onUploadError: (message: string) => void
+  initialAvatarUrl?: string;
+  onUploadComplete: (avatarUrl: string) => void;
+  onUploadError: (message: string) => void;
+}
+
+interface UploadAvatarResponse {
+  avatar_url: string;
 }
 
 const AvatarUploader: React.FC<Props> = ({ initialAvatarUrl, onUploadComplete, onUploadError }) => {
-  const [preview, setPreview] = useState<string | null>(initialAvatarUrl || null)
-  const [uploading, setUploading] = useState(false)
+  const [preview, setPreview] = useState<string | null>(initialAvatarUrl || null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    setPreview(initialAvatarUrl || null)
-  }, [initialAvatarUrl])
+    setPreview(initialAvatarUrl || null);
+  }, [initialAvatarUrl]);
 
   useEffect(() => {
     return () => {
       if (preview && preview !== initialAvatarUrl) {
-        URL.revokeObjectURL(preview)
+        URL.revokeObjectURL(preview);
       }
-    }
-  }, [preview, initialAvatarUrl])
+    };
+  }, [preview, initialAvatarUrl]);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) return
-    const file = acceptedFiles[0]
+    if (acceptedFiles.length === 0) return;
+    const file = acceptedFiles[0];
 
-    const objectUrl = URL.createObjectURL(file)
-    setPreview(objectUrl)
-    onUploadError('')
+    const objectUrl = URL.createObjectURL(file);
+    setPreview(objectUrl);
+    onUploadError("");
 
     if (!window.confirm("Вы точно хотите загрузить этот аватар?")) {
-      setPreview(initialAvatarUrl || null)
-      URL.revokeObjectURL(objectUrl)
-      return
+      setPreview(initialAvatarUrl || null);
+      URL.revokeObjectURL(objectUrl);
+      return;
     }
 
-    setUploading(true)
+    setUploading(true);
 
-    const formData = new FormData()
-    formData.append("file", file)
+    const formData = new FormData();
+    formData.append("file", file);
 
     try {
-      const response = await axios.post("/homepage/upload-avatar", formData, {
+      const response = await axios.post<UploadAvatarResponse>("/homepage/upload-avatar", formData, {
         headers: { "Content-Type": "multipart/form-data" },
-      })
-      onUploadComplete(response.data.avatar_url)
+      });
+      onUploadComplete(response.data.avatar_url);
     } catch (err: any) {
       const message =
         err.response?.data?.detail ||
         err.message ||
-        "Ошибка при загрузке файла"
-      onUploadError(message)
-      setPreview(initialAvatarUrl || null)
+        "Ошибка при загрузке файла";
+      onUploadError(message);
+      setPreview(initialAvatarUrl || null);
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }, [initialAvatarUrl, onUploadComplete, onUploadError])
+  }, [initialAvatarUrl, onUploadComplete, onUploadError]);
 
   const removePreview = () => {
-    if (!window.confirm("Удалить аватар?")) return
-    setPreview(null)
-    onUploadComplete('') // сообщаем родителю, что аватара нет
-  }
+    if (!window.confirm("Удалить аватар?")) return;
+    setPreview(null);
+    onUploadComplete(""); // сообщаем родителю, что аватара нет
+  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { "image/*": [] },
     maxFiles: 1,
-  })
+  });
 
   return (
     <div className="border-2 border-dashed border-gray-300 p-4 rounded text-center relative max-w-xs mx-auto">
@@ -142,7 +146,7 @@ const AvatarUploader: React.FC<Props> = ({ initialAvatarUrl, onUploadComplete, o
         )
       )}
     </div>
-  )
-}
+  );
+};
 
-export default AvatarUploader
+export default AvatarUploader;

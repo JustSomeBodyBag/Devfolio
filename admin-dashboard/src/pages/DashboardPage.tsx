@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Projects from '../components/Dashboard/Projects';
 import Analytics from '../components/Dashboard/Analytics';
 import Settings from '../components/Dashboard/Settings';
-import HomePageContentEditor from '../components/Dashboard/HomePageContent'; // импорт нового компонента
+import HomePageContentEditor from '../components/Dashboard/HomePageContent';
 import LayoutWrapper from '../components/Layout/LayoutWrapper';
 
 type Section = 'projects' | 'analytics' | 'settings' | 'homepage';
@@ -25,8 +25,14 @@ const DashboardPage: React.FC = () => {
     }
   };
 
+  const handleSelect = (section: string) => {
+    if (section === 'projects' || section === 'analytics' || section === 'settings' || section === 'homepage') {
+      setActiveSection(section);
+    }
+  };
+
   return (
-    <LayoutWrapper activeSection={activeSection} onSelect={setActiveSection}>
+    <LayoutWrapper activeSection={activeSection} onSelect={handleSelect}>
       {renderContent()}
     </LayoutWrapper>
   );

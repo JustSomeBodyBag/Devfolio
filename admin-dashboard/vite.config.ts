@@ -5,8 +5,9 @@ import react from '@vitejs/plugin-react'
 import "./polyfill.js";
 
 export default defineConfig({
+  base: '/admin/',
   plugins: [react()],
   server: {
-    port: 3000
+    port: 5173
   }
 })

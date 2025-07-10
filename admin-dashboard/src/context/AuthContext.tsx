@@ -1,5 +1,6 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react'; // React убран
 import type { ReactNode } from 'react';
+
 import { parseJwt } from '../utils/parseJwt';
 
 interface User {

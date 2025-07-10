@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import api from "../../api/axios";
 
+interface ChangePasswordResponse {
+  message?: string;
+}
+
 const ChangePasswordForm: React.FC = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -19,7 +23,7 @@ const ChangePasswordForm: React.FC = () => {
 
     setLoading(true);
     try {
-      const res = await api.post("/auth/change-credentials", {
+      const res = await api.post<ChangePasswordResponse>("/auth/change-credentials", {
         oldPassword,
         newPassword,
         newUsername: null,

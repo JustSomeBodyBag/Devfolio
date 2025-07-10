@@ -1,5 +1,6 @@
 import React from "react";
 import ProjectItem from "./ProjectItem";
+import type { Project } from "../../../context/ProjectsContext";
 import { useProjects } from "../../../context/ProjectsContext";
 import {
   DndContext,
@@ -16,6 +17,10 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+
+interface ProjectListProps {
+  projects: Project[];
+}
 
 interface SortableProjectItemProps {
   projectId: number;
@@ -37,16 +42,13 @@ const SortableProjectItem: React.FC<SortableProjectItemProps> = ({ projectId }) 
 
   return (
     <div ref={setNodeRef} style={style} className="mb-4">
-      <ProjectItem
-        project={project}
-        dragHandleProps={{ ...attributes, ...listeners }}
-      />
+      <ProjectItem project={project} dragHandleProps={{ ...attributes, ...listeners }} />
     </div>
   );
 };
 
-const ProjectList: React.FC = () => {
-  const { projects, isLoading, error, refreshProjects, reorderProjects } = useProjects();
+const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
+  const { isLoading, error, refreshProjects, reorderProjects } = useProjects();
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -83,15 +85,8 @@ const ProjectList: React.FC = () => {
         <p className="text-center text-gray-600 dark:text-gray-400">Проекты не найдены.</p>
       )}
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext
-          items={projects.map((p) => p.id.toString())}
-          strategy={verticalListSortingStrategy}
-        >
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={projects.map((p) => p.id.toString())} strategy={verticalListSortingStrategy}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {projects.map((project) => (
               <SortableProjectItem key={project.id} projectId={project.id} />

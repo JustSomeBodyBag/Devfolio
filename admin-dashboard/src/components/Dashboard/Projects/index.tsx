@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ProjectList from "./ProjectList";
-import type { Project } from "../../../types/projectTypes";
+import type { Project } from "../../../context/ProjectsContext";
 
 interface RawProject {
   id: number;
   name: string;
-  description: string;
+  description?: string;
   screenshot_url?: string | null;
 }
 
@@ -20,12 +20,16 @@ const Projects: React.FC = () => {
         const res = await fetch("http://localhost:8000/github/projects");
         if (!res.ok) throw new Error(`Ошибка загрузки проектов: ${res.statusText}`);
         const data: RawProject[] = await res.json();
-        const formattedProjects = data.map((item) => ({
+
+        const formattedProjects: Project[] = data.map((item) => ({
           id: item.id,
           name: item.name,
-          description: item.description,
-          thumbnailUrl: item.screenshot_url || "",
+          description: item.description || "",
+          screenshot_url: item.screenshot_url || null,
+          thumbnailUrl: item.screenshot_url || null,
+          screenshot_preview_url: null,
         }));
+
         setProjects(formattedProjects);
       } catch (err: any) {
         setError(err.message);

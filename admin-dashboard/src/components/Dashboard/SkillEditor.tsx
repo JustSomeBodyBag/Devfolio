@@ -27,12 +27,13 @@ export default function SkillEditor() {
   const fetchSkills = async () => {
     setLoading(true)
     try {
-      const res = await axios.get('/admin/skills/admin/skills/', {
+      const res = await axios.get<Skill[]>('/admin/skills/', {
         headers: { Authorization: `Bearer ${token}` },
       })
       setSkills(res.data)
       setError(null)
-    } catch {
+    } catch (err) {
+      console.error(err)
       setError('Ошибка загрузки навыков')
     } finally {
       setLoading(false)
@@ -43,16 +44,21 @@ export default function SkillEditor() {
     if (!newSkillName.trim()) return
     setSaving(true)
     try {
-      const res = await axios.post('/admin/skills/admin/skills/', {
-        name: newSkillName.trim(),
-        level: newSkillLevel,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      setSkills(prev => [...prev, res.data])
+      const res = await axios.post<Skill>(
+        '/admin/skills/',
+        {
+          name: newSkillName.trim(),
+          level: newSkillLevel,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      setSkills((prev) => [...prev, res.data]) // res.data уже типа Skill
       setNewSkillName('')
       setNewSkillLevel(0)
-    } catch {
+    } catch (err) {
+      console.error(err)
       setError('Ошибка при добавлении навыка')
     } finally {
       setSaving(false)
@@ -69,38 +75,48 @@ export default function SkillEditor() {
     if (editSkillId === null || !editSkillName.trim()) return
     setSaving(true)
     try {
-      await axios.put(`/admin/skills/admin/skills/${editSkillId}`, {
-        name: editSkillName.trim(),
-        level: editSkillLevel,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      setSkills(prev =>
-        prev.map(skill =>
+      await axios.put(
+        `/admin/skills/${editSkillId}/`,
+        {
+          name: editSkillName.trim(),
+          level: editSkillLevel,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      setSkills((prev) =>
+        prev.map((skill) =>
           skill.id === editSkillId
             ? { ...skill, name: editSkillName.trim(), level: editSkillLevel }
             : skill
         )
       )
-      setEditSkillId(null)
-      setEditSkillName('')
-      setEditSkillLevel(0)
-    } catch {
+      cancelEdit()
+    } catch (err) {
+      console.error(err)
       setError('Ошибка при редактировании')
     } finally {
       setSaving(false)
     }
   }
 
+  const cancelEdit = () => {
+    setEditSkillId(null)
+    setEditSkillName('')
+    setEditSkillLevel(0)
+  }
+
   const deleteSkill = async (id: number) => {
     if (!confirm('Удалить этот навык?')) return
     setSaving(true)
     try {
-      await axios.delete(`/admin/skills/admin/skills/${id}`, {
+      await axios.delete(`/admin/skills/${id}/`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      setSkills(prev => prev.filter(skill => skill.id !== id))
-    } catch {
+      setSkills((prev) => prev.filter((skill) => skill.id !== id))
+    } catch (err) {
+      console.error(err)
       setError('Ошибка при удалении')
     } finally {
       setSaving(false)
@@ -110,13 +126,15 @@ export default function SkillEditor() {
   return (
     <div className="max-w-xl mx-auto p-6 bg-white rounded shadow space-y-6 box-border">
       <h2 className="text-xl font-bold text-gray-800">Навыки</h2>
+
       {error && <p className="text-red-600 font-semibold">{error}</p>}
+
       {loading ? (
         <div>Загрузка...</div>
       ) : (
         <>
           <ul className="space-y-4">
-            {skills.map(skill => (
+            {skills.map((skill) => (
               <li key={skill.id} className="flex items-center space-x-4">
                 {editSkillId === skill.id ? (
                   <>
@@ -124,17 +142,21 @@ export default function SkillEditor() {
                       type="text"
                       value={editSkillName}
                       onChange={(e) => setEditSkillName(e.target.value)}
-                      className="flex-grow min-w-0 border rounded px-3 py-2 box-border"
+                      className="flex-grow min-w-0 border rounded px-3 py-2"
                       disabled={saving}
+                      onKeyDown={(e) => e.key === 'Enter' && saveEdit()}
                     />
                     <input
                       type="number"
                       min={0}
                       max={100}
                       value={editSkillLevel}
-                      onChange={(e) => setEditSkillLevel(Number(e.target.value))}
-                      className="w-20 border rounded px-2 py-2 text-center box-border"
+                      onChange={(e) =>
+                        setEditSkillLevel(Number(e.target.value))
+                      }
+                      className="w-20 border rounded px-2 py-2 text-center"
                       disabled={saving}
+                      onKeyDown={(e) => e.key === 'Enter' && saveEdit()}
                     />
                     <button
                       onClick={saveEdit}
@@ -144,7 +166,7 @@ export default function SkillEditor() {
                       Сохранить
                     </button>
                     <button
-                      onClick={() => setEditSkillId(null)}
+                      onClick={cancelEdit}
                       disabled={saving}
                       className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500 disabled:opacity-50"
                     >
@@ -180,18 +202,20 @@ export default function SkillEditor() {
               type="text"
               placeholder="Новый навык"
               value={newSkillName}
-              onChange={e => setNewSkillName(e.target.value)}
-              className="flex-grow min-w-0 border rounded px-3 py-2 box-border"
+              onChange={(e) => setNewSkillName(e.target.value)}
+              className="flex-grow min-w-0 border rounded px-3 py-2"
               disabled={saving}
+              onKeyDown={(e) => e.key === 'Enter' && addSkill()}
             />
             <input
               type="number"
               min={0}
               max={100}
               value={newSkillLevel}
-              onChange={e => setNewSkillLevel(Number(e.target.value))}
-              className="w-20 border rounded px-2 py-2 text-center box-border"
+              onChange={(e) => setNewSkillLevel(Number(e.target.value))}
+              className="w-20 border rounded px-2 py-2 text-center"
               disabled={saving}
+              onKeyDown={(e) => e.key === 'Enter' && addSkill()}
             />
             <button
               onClick={addSkill}

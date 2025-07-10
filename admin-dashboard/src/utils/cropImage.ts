@@ -1,5 +1,4 @@
-// utils/cropImage.ts
-import { Area } from "react-easy-crop";
+import type { Area } from "react-easy-crop";
 
 const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {

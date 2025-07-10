@@ -9,7 +9,7 @@ interface HomePageContent {
   title: string
   subtitle?: string
   about?: string
-  avatar_url?: string | undefined
+  avatar_url?: string
 }
 
 export default function HomePageContentEditor() {
@@ -27,23 +27,29 @@ export default function HomePageContentEditor() {
   const [avatarError, setAvatarError] = useState<string | null>(null)
 
   useEffect(() => {
-    setLoading(true)
-    axios.get('/homepage/', {
-      headers: { Authorization: `Bearer ${token}` },
-    }).then(res => {
-      if (res.data) {
+    const fetchData = async () => {
+      setLoading(true)
+      try {
+        const res = await axios.get<HomePageContent>('/homepage/', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const data = res.data
         setContent({
-          title: res.data.title,
-          subtitle: res.data.subtitle ?? '',
-          about: res.data.about ?? '',
-          avatar_url: res.data.avatar_url || undefined,
+          title: data.title,
+          subtitle: data.subtitle ?? '',
+          about: data.about ?? '',
+          avatar_url: data.avatar_url || undefined,
         })
         setIsEditing(true)
+        setError(null)
+      } catch {
+        setError('Ошибка загрузки данных')
+      } finally {
+        setLoading(false)
       }
-      setError(null)
-    }).catch(() => {
-      setError('Ошибка загрузки данных')
-    }).finally(() => setLoading(false))
+    }
+
+    fetchData()
   }, [token])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -75,9 +81,13 @@ export default function HomePageContentEditor() {
 
     try {
       if (isEditing) {
-        await axios.put('/homepage/', payload, { headers: { Authorization: `Bearer ${token}` } })
+        await axios.put('/homepage/', payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
       } else {
-        await axios.post('/homepage/', payload, { headers: { Authorization: `Bearer ${token}` } })
+        await axios.post('/homepage/', payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
         setIsEditing(true)
       }
       alert('Сохранено')
@@ -96,7 +106,7 @@ export default function HomePageContentEditor() {
         {error && <div className="text-red-600 font-semibold">{error}</div>}
 
         <div>
-          <label className="block font-semibold mb-1" htmlFor="title">Заголовок</label>
+          <label htmlFor="title" className="block font-semibold mb-1">Заголовок</label>
           <input
             id="title"
             type="text"
@@ -105,33 +115,33 @@ export default function HomePageContentEditor() {
             onChange={handleChange}
             required
             disabled={saving}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 box-border"
+            className="w-full border border-gray-300 rounded px-3 py-2"
           />
         </div>
 
         <div>
-          <label className="block font-semibold mb-1" htmlFor="subtitle">Подзаголовок</label>
+          <label htmlFor="subtitle" className="block font-semibold mb-1">Подзаголовок</label>
           <input
             id="subtitle"
             type="text"
             name="subtitle"
-            value={content.subtitle || ''}
+            value={content.subtitle}
             onChange={handleChange}
             disabled={saving}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 box-border"
+            className="w-full border border-gray-300 rounded px-3 py-2"
           />
         </div>
 
         <div>
-          <label className="block font-semibold mb-1" htmlFor="about">О себе</label>
+          <label htmlFor="about" className="block font-semibold mb-1">О себе</label>
           <textarea
             id="about"
             name="about"
-            value={content.about || ''}
+            value={content.about}
             onChange={handleChange}
             disabled={saving}
             rows={5}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y box-border"
+            className="w-full border border-gray-300 rounded px-3 py-2 resize-y"
           />
         </div>
 
