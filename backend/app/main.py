@@ -8,8 +8,7 @@ from app.public_api.projects_public import router as public_projects_router
 from app.database import engine
 from app.models import Base
 
-# Импортируем твой avatar router
-from app.routers.avatar import avatar  # путь корректируй согласно структуре проекта
+from app.routers.avatar import avatar  # проверь путь, если нужно — исправь
 from app.routers.skills import router as skills_router
 from app.public_api.skills_public import router as skills_public_router
 
@@ -25,10 +24,9 @@ origins = [
     "http://localhost:3001",
     "http://127.0.0.1:3001",
     "http://192.168.2.102:3001",
-    "http://192.168.2.101:5173",   # например, твой реальный IP и порт Vite dev server
-    "http://192.168.2.101",        # если фронтенд через nginx на 80 порту
+    "http://192.168.2.101:5173",
+    "http://192.168.2.101",
 ]
-
 
 @app.on_event("startup")
 async def on_startup():
@@ -45,7 +43,6 @@ app.add_middleware(
 
 # === Routers ===
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
-
 app.include_router(github_router, prefix="/github", tags=["github"])
 
 app.include_router(projects_router, prefix="/admin", tags=["projects"])
@@ -55,7 +52,7 @@ app.include_router(skills_router, prefix="/admin/skills", tags=["skills"])
 app.include_router(public_projects_router)
 app.include_router(skills_public_router)
 
-app.include_router(avatar) 
+app.include_router(avatar)
 
 app.include_router(analytics.router)
 

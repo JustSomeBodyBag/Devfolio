@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import api from '@/api/axios';
 import './Contacts.css';
 
@@ -13,6 +14,7 @@ export default function Contacts() {
   });
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,6 +24,11 @@ export default function Contacts() {
     e.preventDefault();
     setError('');
     setSuccess(false);
+
+    if (!recaptchaToken) {
+      setError("Пожалуйста, подтвердите, что вы не робот.");
+      return;
+    }
 
     if (!form.email && !form.telegram) {
       setError('Укажите email или telegram для обратной связи');
@@ -34,9 +41,11 @@ export default function Contacts() {
         email: form.email || undefined,
         telegram: form.telegram || undefined,
         message: form.message,
+        recaptcha_token: recaptchaToken,
       });
       setSuccess(true);
       setForm({ name: '', email: '', telegram: '', message: '' });
+      setRecaptchaToken(null);
     } catch (err) {
       setError('Ошибка при отправке сообщения');
       console.error(err);
@@ -86,6 +95,11 @@ export default function Contacts() {
           value={form.message}
           onChange={handleChange}
           required
+        />
+
+        <ReCAPTCHA
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+          onChange={(token) => setRecaptchaToken(token)}
         />
 
         <button type="submit" className="contacts-btn">

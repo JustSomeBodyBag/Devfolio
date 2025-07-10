@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     # Telegram
     telegram_bot_token: str = Field(..., env="TELEGRAM_BOT_TOKEN")
     telegram_chat_id: int = Field(..., env="TELEGRAM_CHAT_ID")
+    recaptcha_secret_key: str = Field(..., env="RECAPTCHA_SECRET_KEY")
 
     class Config:
         env_file = ".env"
