@@ -159,6 +159,173 @@ admin-dashboard/
 ├── styles/                # Tailwind
 └── api/                   # Axios, mockAnalytics
 ```
+
+UPD:
+---
+
+## 🐳 Docker и Nginx / Docker and Nginx
+
+В корне проекта есть файл `docker-compose.yml` и Dockerfile для каждого сервиса:
+
+- `backend/Dockerfile.backend`
+- `frontend/Dockerfile.front`
+- `admin-dashboard/Dockerfile.admin`
+- Конфигурация nginx — `nginx/nginx.conf`
+
+---
+
+### 🚀 Запуск через Docker Compose / Running with Docker Compose
+
+```bash
+docker-compose up -d --build
+Запускает все сервисы (backend, frontend, admin-dashboard, базу данных, nginx) в отдельных контейнерах.
+```
+🏗️ Dockerfile / Dockerfiles
+Backend (backend/Dockerfile.backend)
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY backend/app ./app
+COPY backend/run_fetcher.py ./
+COPY backend/create_user.py ./
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+Frontend (frontend/Dockerfile.front)
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY frontend/package*.json ./
+RUN npm install
+
+COPY frontend/ ./
+
+RUN npm run build
+
+CMD ["npm", "run", "start"]
+```
+Admin Dashboard (admin-dashboard/Dockerfile.admin)
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY admin-dashboard/package*.json ./
+RUN npm install
+
+COPY admin-dashboard/ ./
+
+RUN npm run build
+
+CMD ["npm", "run", "preview"]
+```
+🌐 Конфигурация Nginx / Nginx Configuration
+Файл конфигурации — nginx/nginx.conf. Nginx проксирует:
+
+Запросы /api/ → на backend (FastAPI)
+
+Запросы /admin/ → на статические файлы админки (например, из admin-dashboard/dist)
+
+Запросы / → на frontend (Next.js)
+
+Убедитесь, что в docker-compose.yml правильно примонтированы конфигурация nginx и папка со статикой админки.
+
+💡 Рекомендации / Recommendations
+Для обновления фронтенда и админки перед запуском Docker билдьте проект командами:
+
+```bash
+cd frontend && npm run build
+cd ../admin-dashboard && npm run build
+Для разработки можно запускать сервисы локально, используя команды из раздела установки.
+```
+🐳 Docker and Nginx (English)
+The project root contains docker-compose.yml and Dockerfiles for each service:
+
+backend/Dockerfile.backend
+
+frontend/Dockerfile.front
+
+admin-dashboard/Dockerfile.admin
+
+Nginx config file — nginx/nginx.conf
+
+🚀 Running with Docker Compose
+```bash
+docker-compose up -d --build
+This command builds and starts all services (backend, frontend, admin-dashboard, database, nginx) in separate containers.
+```
+🏗️ Dockerfiles
+Backend (backend/Dockerfile.backend)
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY backend/app ./app
+COPY backend/run_fetcher.py ./
+COPY backend/create_user.py ./
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+Frontend (frontend/Dockerfile.front)
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY frontend/package*.json ./
+RUN npm install
+
+COPY frontend/ ./
+
+RUN npm run build
+
+CMD ["npm", "run", "start"]
+```
+Admin Dashboard (admin-dashboard/Dockerfile.admin)
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY admin-dashboard/package*.json ./
+RUN npm install
+
+COPY admin-dashboard/ ./
+
+RUN npm run build
+
+CMD ["npm", "run", "preview"]
+```
+🌐 Nginx Configuration
+The Nginx config file is located at nginx/nginx.conf. It proxies requests:
+
+/api/ → to backend (FastAPI)
+
+/admin/ → to admin dashboard static files (e.g., from admin-dashboard/dist)
+
+/ → to frontend (Next.js)
+
+Make sure docker-compose.yml mounts nginx config and admin static files folders correctly.
+
+💡 Recommendations
+Before running Docker, build frontend and admin dashboard:
+
+```bash
+cd frontend && npm run build
+cd ../admin-dashboard && npm run build
+For development, you can run each service locally using the setup commands.
+```
 📄 Лицензия / License
 MIT License — свободное использование, распространение и изменение.
 
