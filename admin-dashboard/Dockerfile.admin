@@ -1,8 +1,17 @@
+# Stage 1: build admin dashboard
 FROM node:18 AS build
 
 WORKDIR /app
-COPY . .
-RUN npm ci && npm run build
 
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+# Stage 2: serve with nginx
 FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+
+COPY --from=build /app/dist /usr/share/nginx/html/admin
+
+CMD ["nginx", "-g", "daemon off;"]

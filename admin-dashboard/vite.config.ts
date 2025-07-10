@@ -8,6 +8,8 @@ export default defineConfig({
   base: '/admin/',
   plugins: [react()],
   server: {
-    port: 5173
+    port: 5173,
+    // Чтобы dev-сервер корректно работал с базовым путем
+    open: '/admin/',
   }
 })

@@ -16,11 +16,10 @@ async def get_projects(session: AsyncSession = Depends(get_async_session)):
 
 @router.post("/fetch", status_code=200)
 async def fetch_projects(
-    session: AsyncSession = Depends(get_async_session),
-    user: schemas.User = Depends(get_current_user),  # защита по токену (опционально)
+    user: schemas.User = Depends(get_current_user),
 ):
     try:
-        await fetch_and_save_projects(session)
+        await fetch_and_save_projects()
         return {"detail": "Projects fetched and saved successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Fetch failed: {str(e)}")

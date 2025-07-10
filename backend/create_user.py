@@ -1,11 +1,11 @@
 import asyncio
-from app.database import async_session  # твоя сессия async
+from app.database import AsyncSessionLocal
 from app.models import User
 
 async def create_user(username: str, password: str):
-    async with async_session() as session:
+    async with AsyncSessionLocal() as session:
         user = User(username=username)
-        user.set_password(password)  # хэшируем пароль
+        user.set_password(password)
         session.add(user)
         await session.commit()
         print(f"User {username} created")

@@ -2,6 +2,7 @@ import React from "react";
 import ProjectItem from "./ProjectItem";
 import type { Project } from "../../../context/ProjectsContext";
 import { useProjects } from "../../../context/ProjectsContext";
+import { useAuth } from "../../../hooks/useAuth";  // Импортируем хук авторизации
 import {
   DndContext,
   closestCenter,
@@ -49,6 +50,7 @@ const SortableProjectItem: React.FC<SortableProjectItemProps> = ({ projectId }) 
 
 const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
   const { isLoading, error, refreshProjects, reorderProjects } = useProjects();
+  const { getToken } = useAuth();
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -64,12 +66,37 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
     await reorderProjects(newOrder);
   };
 
+  const handleFetchGithub = async () => {
+    const token = getToken();
+    if (!token) {
+      alert("Пожалуйста, войдите в систему.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/github/fetch`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Ошибка: ${response.status}`);
+      }
+      // После успешного обновления проектов обновляем список
+      await refreshProjects();
+    } catch (e) {
+      alert("Ошибка при обновлении данных с GitHub.");
+      console.error(e);
+    }
+  };
+
   return (
     <section className="max-w-5xl mx-auto p-6">
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Проекты</h1>
         <button
-          onClick={refreshProjects}
+          onClick={handleFetchGithub}
           disabled={isLoading}
           className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold transition"
           type="button"

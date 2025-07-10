@@ -1,6 +1,7 @@
-import { createContext, useState, useContext, useEffect } from 'react'; // React убран
+import { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
-
+import axiosInstance from '../api/axios'; // кастомный инстанс axios
+import axios from 'axios'; // оригинальный axios для проверки isAxiosError
 import { parseJwt } from '../utils/parseJwt';
 
 interface User {
@@ -14,6 +15,10 @@ interface AuthContextType {
   token: string | null;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
+}
+
+interface LoginResponse {
+  access_token: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,24 +42,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       params.append('username', username);
       params.append('password', password);
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: params.toString(),
-      });
+      const response = await axiosInstance.post<LoginResponse>(
+        '/auth/login',
+        params.toString(), // Важно: передаём строку, а не объект URLSearchParams
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
 
-      if (!response.ok) return false;
+      if (response.status !== 200) return false;
 
-      const data = await response.json();
+      const data = response.data;
       const token = data.access_token;
 
       const payload = parseJwt(token);
       const user: User = {
         id: payload.sub,
         username: payload.sub,
-        role: payload.role || 'admin', // по умолчанию
+        role: payload.role || 'guest',
       };
 
       setUser(user);
@@ -63,8 +70,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('token', token);
 
       return true;
-    } catch (err) {
-      console.error('Login error:', err);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error('Login error:', error.response?.data || error.message);
+      } else {
+        console.error('Login error:', error);
+      }
       return false;
     }
   };

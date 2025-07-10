@@ -25,7 +25,10 @@ origins = [
     "http://localhost:3001",
     "http://127.0.0.1:3001",
     "http://192.168.2.102:3001",
+    "http://192.168.2.101:5173",   # например, твой реальный IP и порт Vite dev server
+    "http://192.168.2.101",        # если фронтенд через nginx на 80 порту
 ]
+
 
 @app.on_event("startup")
 async def on_startup():

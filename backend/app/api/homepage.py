@@ -30,5 +30,9 @@ async def update_home_content(
     db: AsyncSession = Depends(get_async_session),
     current_user: User = Depends(get_current_user)
 ):
-    # Обновляем только текстовые поля, аватар сюда не входит
-    return await crud.update_home_content(db, data)
+    try:
+        return await crud.update_home_content(db, data)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()  # вывод в логи сервера
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")

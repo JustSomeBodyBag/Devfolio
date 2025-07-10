@@ -11,7 +11,7 @@ export const parseJwt = (token: string): any => {
         .join('')
     );
     return JSON.parse(jsonPayload);
-  } catch (e) {
+  } catch {
     return {};
   }
 };

@@ -67,10 +67,17 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 async def get_home_content(db: AsyncSession) -> HomePageContent | None:
     result = await db.execute(select(HomePageContent).limit(1))
     content = result.scalars().first()
-    
-    if content and content.avatar_url and not content.avatar_url.startswith("http"):
-        content.avatar_url = f"{BASE_URL}/{content.avatar_url}"
+
+    if content:
+        # Если avatar_url пустая строка, заменить на None
+        if content.avatar_url == '':
+            content.avatar_url = None
+        # Если avatar_url есть и не начинается с http, добавить BASE_URL
+        elif content.avatar_url and not content.avatar_url.startswith("http"):
+            content.avatar_url = f"{BASE_URL}/{content.avatar_url}"
+
     return content
+
 
 
 async def create_home_content(db: AsyncSession, content_in: HomePageContentBase) -> HomePageContent:
@@ -85,7 +92,6 @@ async def update_home_content(db: AsyncSession, content_in: HomePageContentBase)
     if not content:
         return await create_home_content(db, content_in)
 
-    # Обновляем только поля кроме avatar_url
     update_data = content_in.dict(exclude_unset=True, exclude={"avatar_url"})
     if update_data:
         stmt = (
@@ -96,8 +102,10 @@ async def update_home_content(db: AsyncSession, content_in: HomePageContentBase)
         )
         await db.execute(stmt)
         await db.commit()
-        await db.refresh(content)
+        content = await get_home_content(db)  # обновленный объект
     return content
+
+
 
 async def update_homepage_avatar(db: AsyncSession, content_id: int, avatar_url: Optional[str]):
     avatar_url = avatar_url or None
