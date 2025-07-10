@@ -1,9 +1,9 @@
-// src/context/AnalyticsContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { visitsData, geoData, sourcesData } from '../api/mockAnalytics';
 
 type Visit = { date: string; visits: number };
-type CountryStat = { country: string; users: number };
-type Source = { source: string; value: number };
+type CountryStat = { country: string; visits: number };
+type Source = { source: string; visits: number };
 
 interface AnalyticsContextType {
   visits: Visit[];
@@ -19,27 +19,10 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [trafficSources, setTrafficSources] = useState<Source[]>([]);
 
   useEffect(() => {
-    // Моки
-    setVisits([
-      { date: '2025-07-01', visits: 150 },
-      { date: '2025-07-02', visits: 230 },
-      { date: '2025-07-03', visits: 180 },
-      { date: '2025-07-04', visits: 300 },
-    ]);
-
-    setGeoStats([
-      { country: 'Россия', users: 120 },
-      { country: 'США', users: 90 },
-      { country: 'Германия', users: 60 },
-      { country: 'Индия', users: 50 },
-    ]);
-
-    setTrafficSources([
-      { source: 'Google', value: 180 },
-      { source: 'Facebook', value: 90 },
-      { source: 'Twitter', value: 40 },
-      { source: 'Прямой трафик', value: 60 },
-    ]);
+    // Используем данные из mockAnalytics.ts
+    setVisits(visitsData);
+    setGeoStats(geoData);
+    setTrafficSources(sourcesData);
   }, []);
 
   return (

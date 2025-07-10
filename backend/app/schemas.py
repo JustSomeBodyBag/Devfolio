@@ -110,3 +110,15 @@ class SkillOut(SkillBase):
 
     class Config:
         orm_mode = True
+
+class VisitCreate(BaseModel):
+    page: str
+    referrer: Optional[str] = None
+    # ip и country не обязательны, заполняются на сервере
+    ip: Optional[str] = None
+    country: Optional[str] = None
+
+class StatsResponse(BaseModel):
+    visits_per_day: dict[str, int]
+    visits_per_country: dict[str, int]
+    visits_per_source: dict[str, int]

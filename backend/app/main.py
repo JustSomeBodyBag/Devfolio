@@ -14,7 +14,7 @@ from app.routers.skills import router as skills_router
 from app.public_api.skills_public import router as skills_public_router
 
 from app.routers import telegram
-
+from app.routers import analytics
 
 
 app = FastAPI()
@@ -52,7 +52,9 @@ app.include_router(skills_router, prefix="/admin/skills", tags=["skills"])
 app.include_router(public_projects_router)
 app.include_router(skills_public_router)
 
-app.include_router(avatar)  
+app.include_router(avatar) 
+
+app.include_router(analytics.router)
 
 app.include_router(telegram.router, prefix="/api/telegram", tags=["Telegram"])
 

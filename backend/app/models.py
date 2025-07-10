@@ -57,3 +57,13 @@ class Skill(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
     level = Column(Integer, nullable=False)
+
+class Visit(Base):
+    __tablename__ = "visits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    timestamp = Column(DateTime(timezone=True), server_default=func.now())
+    ip = Column(String, nullable=True)
+    page = Column(String, nullable=True)
+    referrer = Column(String, nullable=True)
+    country = Column(String, nullable=True)

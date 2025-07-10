@@ -11,7 +11,6 @@ import {
   Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useAnalytics } from '../../../context/AnalyticsContext';
 
 ChartJS.register(
   CategoryScale,
@@ -24,15 +23,17 @@ ChartJS.register(
   Filler
 );
 
-const VisitsChart: React.FC = () => {
-  const { visits } = useAnalytics();
+type VisitsChartProps = {
+  data: { date: string; visits: number }[];
+};
 
-  const data = {
-    labels: visits.map((v) => v.date),
+const VisitsChart: React.FC<VisitsChartProps> = ({ data }) => {
+  const chartData = {
+    labels: data.map((v) => v.date),
     datasets: [
       {
         label: 'Посещения',
-        data: visits.map((v) => v.visits),
+        data: data.map((v) => v.visits),
         fill: true,
         backgroundColor: 'rgba(59, 130, 246, 0.2)', // blue-500 с прозрачностью
         borderColor: 'rgba(59, 130, 246, 1)',
@@ -43,18 +44,14 @@ const VisitsChart: React.FC = () => {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false,  // Важно для контроля высоты через CSS
+    maintainAspectRatio: false, // Контроль высоты через CSS
     plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: false,
-      },
+      legend: { position: 'top' as const },
+      title: { display: false },
     },
   };
 
-  return <Line data={data} options={options} />;
+  return <Line data={chartData} options={options} />;
 };
 
 export default VisitsChart;

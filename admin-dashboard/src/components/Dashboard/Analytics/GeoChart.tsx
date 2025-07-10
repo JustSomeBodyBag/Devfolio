@@ -9,19 +9,20 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { useAnalytics } from '../../../context/AnalyticsContext';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const GeoChart: React.FC = () => {
-  const { geoStats } = useAnalytics();
+type GeoChartProps = {
+  data: { country: string; visits: number }[];
+};
 
-  const data = {
-    labels: geoStats.map((g) => g.country),
+const GeoChart: React.FC<GeoChartProps> = ({ data }) => {
+  const chartData = {
+    labels: data.map((g) => g.country),
     datasets: [
       {
         label: 'Пользователи',
-        data: geoStats.map((g) => g.users),
+        data: data.map((g) => g.visits),
         backgroundColor: 'rgba(16, 185, 129, 0.6)', // green-500
       },
     ],
@@ -29,18 +30,14 @@ const GeoChart: React.FC = () => {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false, // Позволяет задать высоту контейнера через CSS
+    maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: false,
-      },
+      legend: { position: 'top' as const },
+      title: { display: false },
     },
   };
 
-  return <Bar data={data} options={options} />;
+  return <Bar data={chartData} options={options} />;
 };
 
 export default GeoChart;

@@ -1,13 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import update
-from sqlalchemy import delete
+from sqlalchemy import delete, update, func
 from typing import Optional
 from passlib.context import CryptContext
 from app.models import Project, User, RoleEnum, HomePageContent
 from app.schemas import UserCreate, HomePageContentBase
 from app.schemas import SkillCreate, SkillUpdate, SkillOut
 from app.models import Skill
+from app.models import Visit
+from app.schemas import VisitCreate
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -138,3 +139,44 @@ async def delete_skill(db: AsyncSession, skill_id: int):
     stmt = delete(Skill).where(Skill.id == skill_id)
     await db.execute(stmt)
     await db.commit()
+
+
+# === Visits (статистика посещений) ===
+
+async def create_visit(db: AsyncSession, visit_in: VisitCreate) -> Visit:
+    visit = Visit(**visit_in.dict())
+    db.add(visit)
+    await db.commit()
+    await db.refresh(visit)
+    return visit
+
+async def get_stats(db: AsyncSession):
+    # Агрегация по дате (YYYY-MM-DD)
+    result_day = await db.execute(
+        select(func.date(Visit.timestamp), func.count(Visit.id))
+        .group_by(func.date(Visit.timestamp))
+        .order_by(func.date(Visit.timestamp))
+    )
+    visits_per_day = {str(row[0]): row[1] for row in result_day.all()}
+
+    # Агрегация по стране
+    result_country = await db.execute(
+        select(Visit.country, func.count(Visit.id))
+        .group_by(Visit.country)
+        .order_by(Visit.country)
+    )
+    visits_per_country = {row[0] or "Unknown": row[1] for row in result_country.all()}
+
+    # Агрегация по источнику (referrer)
+    result_source = await db.execute(
+        select(Visit.referrer, func.count(Visit.id))
+        .group_by(Visit.referrer)
+        .order_by(Visit.referrer)
+    )
+    visits_per_source = {row[0] or "Unknown": row[1] for row in result_source.all()}
+
+    return {
+        "visits_per_day": visits_per_day,
+        "visits_per_country": visits_per_country,
+        "visits_per_source": visits_per_source,
+    }
