@@ -54,6 +54,8 @@ PORT=8000
 # PostgreSQL
 DATABASE_URL=postgresql+asyncpg://username:password@localhost:5432/devfolio_db
 
+BASE_URL=http://"your-backend-ip"
+
 # JWT
 SECRET_KEY=your-secret-key
 ALGORITHM=HS256

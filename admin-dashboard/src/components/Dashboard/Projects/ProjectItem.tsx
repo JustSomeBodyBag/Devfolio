@@ -7,6 +7,11 @@ interface ProjectItemProps {
   dragHandleProps?: React.HTMLAttributes<HTMLElement>;
 }
 
+const API_URL = import.meta.env.VITE_API_URL;
+if (!API_URL) {
+  throw new Error("VITE_API_URL is not defined");
+}
+
 const ProjectItem: React.FC<ProjectItemProps> = ({ project, dragHandleProps }) => {
   const { deleteScreenshot, refreshProjects } = useProjects();
   const [deleting, setDeleting] = useState(false);
@@ -33,7 +38,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ project, dragHandleProps }) =
         <img
           src={
             project.screenshot_url
-              ? `http://localhost:8000/${project.screenshot_url}`
+              ? `${API_URL.replace(/\/api\/?$/, "")}/${project.screenshot_url}`
               : "/default-thumbnail.png"
           }
           alt={`${project.name} thumbnail`}

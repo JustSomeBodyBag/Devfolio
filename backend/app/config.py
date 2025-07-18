@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     telegram_chat_id: int = Field(..., env="TELEGRAM_CHAT_ID")
     recaptcha_secret_key: str = Field(..., env="RECAPTCHA_SECRET_KEY")
 
+    base_url: str = Field(default="http://localhost:8000", env="BASE_URL")
+
     class Config:
         env_file = ".env"
         extra = "ignore"

@@ -9,6 +9,11 @@ interface RawProject {
   screenshot_url?: string | null;
 }
 
+const API_URL = import.meta.env.VITE_API_URL;
+if (!API_URL) {
+  throw new Error("VITE_API_URL is not defined");
+}
+
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -17,10 +22,10 @@ const Projects: React.FC = () => {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const res = await fetch("http://localhost:8000/github/projects");
+        const res = await fetch(`${API_URL}/github/projects`);
         if (!res.ok) throw new Error(`Ошибка загрузки проектов: ${res.statusText}`);
-        const data: RawProject[] = await res.json();
 
+        const data: RawProject[] = await res.json();
         const formattedProjects: Project[] = data.map((item) => ({
           id: item.id,
           name: item.name,
@@ -37,6 +42,7 @@ const Projects: React.FC = () => {
         setLoading(false);
       }
     }
+
     fetchProjects();
   }, []);
 

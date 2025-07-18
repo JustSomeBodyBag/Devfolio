@@ -80,16 +80,19 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+
       if (!response.ok) {
-        throw new Error(`Ошибка: ${response.status}`);
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.detail || `Ошибка: ${response.status}`);
       }
-      // После успешного обновления проектов обновляем список
+
       await refreshProjects();
     } catch (e) {
       alert("Ошибка при обновлении данных с GitHub.");
       console.error(e);
     }
   };
+
 
   return (
     <section className="max-w-5xl mx-auto p-6">

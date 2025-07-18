@@ -9,10 +9,10 @@ from app.schemas import SkillCreate, SkillUpdate, SkillOut
 from app.models import Skill
 from app.models import Visit
 from app.schemas import VisitCreate
-
+from app.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-BASE_URL = "http://localhost:8000"
+
 
 # === Projects ===
 async def get_all_projects(db: AsyncSession):
@@ -72,9 +72,9 @@ async def get_home_content(db: AsyncSession) -> HomePageContent | None:
         # Если avatar_url пустая строка, заменить на None
         if content.avatar_url == '':
             content.avatar_url = None
-        # Если avatar_url есть и не начинается с http, добавить BASE_URL
+        # Если avatar_url есть и не начинается с http, добавить settings.base_url
         elif content.avatar_url and not content.avatar_url.startswith("http"):
-            content.avatar_url = f"{BASE_URL}/{content.avatar_url}"
+            content.avatar_url = f"{settings.base_url}/{content.avatar_url}"
 
     return content
 

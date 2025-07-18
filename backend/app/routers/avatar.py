@@ -5,13 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.deps import get_session, admin_required
 from app import crud
 from app.utils.image_processing import process_image
+from app.config import settings
 
 avatar = APIRouter(prefix="/homepage", tags=["homepage"])
 
 UPLOAD_DIR = "uploads/avatars"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-BASE_URL = "http://localhost:8000"  # Замени на актуальный базовый URL твоего API
 
 @avatar.post("/upload-avatar", status_code=status.HTTP_200_OK)
 async def upload_avatar(
@@ -48,8 +48,8 @@ async def upload_avatar(
     # Удаляем старый аватар и превью, если они есть
     if homepage_content.avatar_url:
         old_avatar_path = homepage_content.avatar_url
-        if old_avatar_path.startswith(BASE_URL):
-            old_avatar_path = old_avatar_path[len(BASE_URL)+1:]  # убираем базовый URL и "/"
+        if old_avatar_path.startswith(settings.base_url):
+            old_avatar_path = old_avatar_path[len(settings.base_url)+1:]  # убираем базовый URL и "/"
 
         old_preview_full_path = os.path.join(os.getcwd(), old_avatar_path)
         base, ext = os.path.splitext(old_preview_full_path)
@@ -59,11 +59,11 @@ async def upload_avatar(
             if os.path.exists(path):
                 os.remove(path)
 
-    # Обновляем в БД новый путь (относительный, чтобы crud добавил BASE_URL)
+    # Обновляем в БД новый путь (относительный, чтобы crud добавил settings.base_url)
     await crud.update_homepage_avatar(db, homepage_content.id, processed_path)
 
     # Формируем абсолютный URL для ответа
-    absolute_avatar_url = f"{BASE_URL}/{processed_path}"
+    absolute_avatar_url = f"{settings.base_url}/{processed_path}"
 
     return {"avatar_url": absolute_avatar_url}
 
@@ -81,6 +81,6 @@ async def update_avatar_url(
     await crud.update_homepage_avatar(db, homepage_content.id, avatar_url)
 
     if not avatar_url.startswith("http"):
-        avatar_url = f"{BASE_URL}/{avatar_url}"
+        avatar_url = f"{settings.base_url}/{avatar_url}"
 
     return {"avatar_url": avatar_url}

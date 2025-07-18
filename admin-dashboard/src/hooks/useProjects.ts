@@ -13,7 +13,10 @@ export type Project = {
   screenshot_preview_url?: string | null;
 };
 
-const BASE_URL = "http://localhost:8000/admin/projects";
+// Берём базовый URL из .env
+const BASE_URL = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "") + "/admin/projects"
+  : "http://localhost:8000/admin/projects";
 
 export function useProjects() {
   const [projects, setProjects] = useState<Project[]>([]);

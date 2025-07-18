@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 export interface Project {
   id: number;
@@ -9,7 +10,6 @@ export interface Project {
   thumbnailUrl?: string | null;
   screenshot_preview_url?: string | null;
 }
-
 
 interface ProjectsContextType {
   projects: Project[];
@@ -23,7 +23,11 @@ interface ProjectsContextType {
 
 const ProjectsContext = createContext<ProjectsContextType | undefined>(undefined);
 
+// 👇 читаем переменную окружения
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const ProjectsProvider = ({ children }: { children: ReactNode }) => {
+  const { getToken } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -31,11 +35,10 @@ export const ProjectsProvider = ({ children }: { children: ReactNode }) => {
   const refreshProjects = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/github/projects");
+      const res = await fetch(`${API_URL}/github/projects`);
       if (!res.ok) throw new Error(`Ошибка загрузки проектов: ${res.statusText}`);
 
       const data = await res.json();
-
       if (!Array.isArray(data)) throw new Error("Неверный формат данных");
 
       const formatted: Project[] = data.map((item: any) => ({
@@ -58,12 +61,18 @@ export const ProjectsProvider = ({ children }: { children: ReactNode }) => {
 
   const reorderProjects = async (newOrder: Project[]) => {
     setProjects(newOrder);
-    // TODO: отправить новый порядок на сервер, если нужно
+    // TODO: Отправить новый порядок на сервер, если нужно
   };
 
   const deleteScreenshot = async (projectId: number) => {
-    const res = await fetch(`http://localhost:8000/github/projects/${projectId}/screenshot`, {
+    const token = getToken();
+    if (!token) throw new Error("Требуется авторизация");
+
+    const res = await fetch(`${API_URL}/admin/projects/${projectId}/screenshot`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (!res.ok) {
       throw new Error("Ошибка при удалении скриншота");
