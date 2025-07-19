@@ -3,7 +3,7 @@
 > 🇷🇺 Универсальная платформа для демонстрации разработчиков, с админкой и Telegram-уведомлениями  
 > 🇺🇸 Full-featured portfolio platform with admin panel, API, and Telegram integration
 
-Live Demo: https://ruslandevfolio.run.place/
+Live Demo: https://ruslandevfolio.duckdns.org/
 
 ---
 
